@@ -1,19 +1,18 @@
 from telegram import LabeledPrice, Update
-from telegram.ext import Updater, CommandHandler, PreCheckoutQueryHandler, MessageHandler, Filters, CallbackContext
+from telegram.ext import Updater, CommandHandler, PreCheckoutQueryHandler, MessageHandler, CallbackContext, filters
+import os
 
-TOKEN = "8757534074:AAHDB5YQXNg0MKsQLbiEIjVYYwomRUrhKkU"  # сюда вставь токен бота
-PROVIDER_TOKEN = ""  # сюда вставь токен провайдера Telegram Stars через BotFather
+TOKEN = os.environ.get("8757534074:AAHDB5YQXNg0MKsQLbiEIjVYYwomRUrhKkU")  # токен бота
+PROVIDER_TOKEN = os.environ.get("PROVIDER_TOKEN")  # токен Telegram Stars
 
-PRICE_STARS = 300  # цена в Stars
+PRICE_STARS = 250  # цена в Stars
 
-# Стартовая команда
 def start(update: Update, context: CallbackContext):
     update.message.reply_text(
-        "Привет, юный друг! Хочешь получить мануалы?\n"
+        f"Привет, юный друг! Хочешь получить мануалы?\n"
         f"Тогда нужно оплатить {PRICE_STARS} Stars за доступ навсегда."
     )
 
-# Команда покупки
 def buy(update: Update, context: CallbackContext):
     title = "Доступ к каналу"
     description = "Навсегда доступ к эксклюзивным мануалам"
@@ -25,15 +24,13 @@ def buy(update: Update, context: CallbackContext):
         title, description, payload, PROVIDER_TOKEN, currency, prices
     )
 
-# Подтверждение перед оплатой
 def precheckout_callback(update: Update, context: CallbackContext):
     query = update.pre_checkout_query
     query.answer(ok=True)
 
-# После успешной оплаты (не пишет пользователю)
 def successful_payment_callback(update: Update, context: CallbackContext):
-    # Здесь можно добавить выдачу доступа к каналу
-    pass  # бот ничего не пишет
+    # ничего не пишет пользователю
+    pass
 
 def main():
     updater = Updater(TOKEN)
@@ -42,7 +39,7 @@ def main():
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("buy", buy))
     dp.add_handler(PreCheckoutQueryHandler(precheckout_callback))
-    dp.add_handler(MessageHandler(Filters.successful_payment, successful_payment_callback))
+    dp.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_callback))
 
     updater.start_polling()
     updater.idle()
