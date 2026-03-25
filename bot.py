@@ -10,7 +10,7 @@ from telegram.ext import (
 import os
 
 TOKEN = "8757534074:AAHDB5YQXNg0MKsQLbiEIjVYYwomRUrhKkU"
-PROVIDER_TOKEN = os.environ.get("PROVIDER_TOKEN")  # токен Telegram Stars
+PROVIDER_TOKEN = os.environ.get("")  # токен Telegram Stars
 
 PRICE_STARS = 250  # цена в Stars
 
